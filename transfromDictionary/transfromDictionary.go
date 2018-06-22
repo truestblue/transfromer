@@ -1,59 +1,26 @@
 package main
 
 import (
-	"fmt"
 	"bytes"
 	"log"
 	"io"
-	"regexp"
-	"io/ioutil"
-	"os"
 )
 
-
-var lookup = map[string]string{
-	"yuyuyuyu": "yyy",
-}
-
-var ValidWord = regexp.MustCompile("\\w").MatchString
-
-const (
-	UserDef  = iota
-	Quoted   = iota
-	//Brackets = iota
-	Scan     = iota
-)
-
-const D_QUOTE = rune('"')
-const END = rune(')')
-
-const VARIABLE = rune('$')
-const BACKSLASH = rune('\\')
-
-func initReader() io.RuneReader {
-	original, err := ioutil.ReadFile("/Users/bluegaston/Desktop/Polyverse/polyscripted-php/tests/php-tests.php")
-
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	return bytes.NewReader(original)
-}
+//TODO: TAKE FILE NAME AS INPUT
+//TODO: REFACTOR
+//TODO: Put it in Polyverse php folder.
+//TODO: Take in outputted dictionary from polyscripted-php
 
 var bufTok = bytes.Buffer{}
 var bufOut = bytes.Buffer{}
 var state = Scan
 
+var numReplaced = 0
+
 func main() {
-	var Escaped = false
 	r := initReader()
-	numReplaced := 0
-	//i := 0
 
 	for {
-		//i++
-		//fmt.Printf("buff: %s [%d] \n", bufOut.String(), i)
 		c, _, err := r.ReadRune()
 		if err != nil {
 			if err == io.EOF {
@@ -63,72 +30,57 @@ func main() {
 			}
 		}
 
-		bufTok.WriteRune(c)
-		if !Escaped {
-			switch state {
-			case UserDef:
-				//print until end of variable
-				if !ValidWord(string(c)) {
-					RestartScan()
-				}
-			case Quoted:
-				if c == D_QUOTE {
-					RestartScan()
-				}
-				//print until end quote
-			case Scan:
-				if !ValidWord(string(c)) {
-					if lookUpBuffer(c) {
-						numReplaced++
-					}
-					bufTok.Reset()
-					Escaped = checkRune(c)
-				}
-
-			}
-		} else {
-			Escaped = false
-		}
-
+		processState(c)
 	}
-	fmt.Printf("%s \n replaced: %d", bufOut.String(), numReplaced)
 
+	writeOut(bufOut.Bytes())
+}
+
+func processState(c rune) {
+	bufTok.WriteRune(c)
+
+	switch state {
+	case Escaped:
+		//do-nothing
+		break
+	case UserDef:
+		if !ValidWord(string(c)) {
+			RestartScan()
+		}
+	case Quoted:
+		if c == DubQUOTE {
+			RestartScan()
+		}
+		//print until end quote
+	case Scan:
+		if !ValidWord(string(c)) {
+			endWord(lookUpBuffer(), c)
+		}
+	}
 
 }
 
 func RestartScan() {
-	state = Scan
 	bufOut.Write(bufTok.Bytes())
 	bufTok.Reset()
+	state = Scan
 }
 
-func checkRune(c rune) bool {
+func transitionState(c rune) {
 	switch c {
-	case D_QUOTE:
+	case DubQUOTE:
 		state = Quoted
 	case VARIABLE:
 		state = UserDef
 	case BACKSLASH:
-		return true
-	}
-	return false
-}
-
-func lookUpBuffer(c rune) bool {
-
-	s := bufTok.String()
-	if s == "<nil>" {
-		return false
-	}
-	x:=len(s) - 1
-	subs := string([]rune(s)[:x])
-	//fmt.Printf("STRING IN LOOKUP: %s, to %s\n", s, subs)
-	if val, ok := lookup[subs]; ok {
-		bufOut.WriteString(val)
-		bufOut.WriteRune(c)
-		return true
-	} else {
-		bufOut.WriteString(s)
-		return false
+		state = Escaped
 	}
 }
+
+func endWord(str string, c rune) {
+	bufOut.WriteString(str)
+	bufOut.WriteRune(c)
+	bufTok.Reset()
+	transitionState(c)
+}
+
