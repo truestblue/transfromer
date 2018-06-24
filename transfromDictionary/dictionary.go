@@ -18,9 +18,16 @@ func lookUpBuffer() string {
 	}
 }
 
+
+//TODO: Grab dictionary -- FromFile
+//func dictionaryInit() {
+//
+//}
+
 var lookup = map[string]string{
 	"echo": "ocho",
 	"do": "od",
 	"while": "elihw",
 	"hi": "ih",
+	"n": "u",
 }

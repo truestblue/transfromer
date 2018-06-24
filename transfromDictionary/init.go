@@ -8,24 +8,41 @@ import (
 	"os"
 	"bytes"
 )
-const FILEIN = "/Users/bluegaston/test.php"
-//const FILEIN = "/Users/bluegaston/Desktop/Polyverse/polyscripted-php/tests/php-tests.php"
-const FILEOUT = "/Users/bluegaston/Desktop/Polyverse/polyscripted-php/tests/transfromed.txt"
 
+const FILEIN = "tests/php-tests.php"
+const FILEOUT = "tests/transformed.php"
 
+var state = NonPhp
 var ValidWord = regexp.MustCompile("\\w").MatchString
+var NewLine = regexp.MustCompile("\\r\\n|\\r|\\n|;").MatchString
+
+var bracketDepth = 0
+var PhpFlag = []byte("<?php")
+var endComment = []byte("*/")
 
 const (
-	UserDef  = iota
-	Quoted   = iota
-	//Brackets = iota
-	Scan     = iota
-	Escaped = iota
+	UserDef        = iota
+	Quoted         = iota
+	Brackets       = iota
+	Scan           = iota
+	Escaped        = iota
+	NonPhp         = iota
+	FwdSearch      = iota
+	MultiComment   = iota
+	OneLineComment = iota
 )
 
-const DubQUOTE = rune('"')
-const VARIABLE = rune('$')
-const BACKSLASH = rune('\\')
+const (
+	DubQUOTE  = rune('"')
+	VARIABLE  = rune('$')
+	BACKSLASH = rune('\\')
+	LBRACKET  = rune('<')
+	RBRACKET  = rune('>')
+	HASHTAG   = rune('#')
+	ASTRIX    = rune('*')
+	FwdSLASH  = rune('/')
+)
+
 
 func initReader() io.RuneReader {
 	original, err := ioutil.ReadFile(FILEIN)
@@ -43,5 +60,4 @@ func writeOut(b []byte) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	fmt.Printf("buff: %s numReplaced: %d", bufOut.String(), numReplaced)
 }
