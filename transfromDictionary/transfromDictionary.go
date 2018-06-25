@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"log"
 	"io"
+	"fmt"
 )
 
 //TODO: TAKE FILE NAME AS INPUT
 //TODO: Put it in Polyverse php folder.
-//TODO: Take in outputted dictionary from polyscripted-php
 
 var bufTok = bytes.Buffer{}
 var bufOut = bytes.Buffer{}
@@ -17,6 +17,7 @@ var numReplaced = 0
 
 func main() {
 	r := initReader()
+	initMapping()
 
 	for {
 		c, _, err := r.ReadRune()
@@ -30,7 +31,7 @@ func main() {
 		processState(c)
 
 	}
-	//fmt.Printf("buf: %s ", bufOut.String())
+	fmt.Printf("buf: %s ", bufOut.String())
 	bufOut.Write(bufTok.Bytes())
 	writeOut(bufOut.Bytes())
 }

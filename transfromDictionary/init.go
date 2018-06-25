@@ -9,8 +9,11 @@ import (
 	"bytes"
 )
 
-const FILEIN = "tests/php-tests.php"
-const FILEOUT = "tests/transformed.php"
+const FILEIN = "/Users/bluegaston/test.php"
+const FILEOUT = "/Users/bluegaston/transformer.php"
+
+//const FILEIN = "tests/php-tests.php"
+//const FILEOUT = "tests/transformed.php"
 
 var state = NonPhp
 var ValidWord = regexp.MustCompile("\\w").MatchString

@@ -1,5 +1,12 @@
 package main
 
+import (
+	"os"
+	"encoding/gob"
+)
+
+var lookup = make(map[string]string)
+
 //TODO process dictionary
 
 func lookUpBuffer() string {
@@ -19,15 +26,21 @@ func lookUpBuffer() string {
 }
 
 
-//TODO: Grab dictionary -- FromFile
-//func dictionaryInit() {
-//
-//}
+//Grab dictionary -- FromFile
+func initMapping() {
+	decodeFile, err := os.Open("../tempDictionary/tempDictionary.gob")
+	if err != nil {
+		panic(err)
+	}
+	defer decodeFile.Close()
 
-var lookup = map[string]string{
-	"echo": "ocho",
-	"do": "od",
-	"while": "elihw",
-	"hi": "ih",
-	"n": "u",
+	decoder := gob.NewDecoder(decodeFile)
+	decoder.Decode(&lookup)
 }
+
+	//"echo": "ocho",
+	//"do": "od",
+	//"while": "elihw",
+	//"hi": "ih",
+	//"n": "u",
+
