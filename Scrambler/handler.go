@@ -10,7 +10,7 @@ import (
 
 var ValidWord = regexp.MustCompile("\\w").MatchString
 
-var keywordsRegex = regexp.MustCompile(
+var keywordsRegex = regexp.MustCompile( //REGEX found as user @martindilling comment on PHP documentation.
 	"((a(bstract|nd|rray|s))|" +
 		"(c(a(llable|se|tch)|l(ass|one)|on(st|tinue)))|" +
 		"(d(e(clare|fault)|ie|o))|" +
@@ -32,8 +32,8 @@ var yakFlag = []byte("%token")
 
 const YAKFILE = "/php/php-src/Zend/zend_language_parser.y"
 const LEXFILE = "/php/php-src/Zend/zend_language_scanner.l"
-const YAKFILEOUT = YAKFILE
-const LEXFILEOUT = LEXFILE
+//const YAKFILEOUT = YAKFILE
+//const LEXFILEOUT = LEXFILE
 
 //const YAKFILE = "zend_language_parser.y"
 //const LEXFILE = "zend_language_scanner.l"

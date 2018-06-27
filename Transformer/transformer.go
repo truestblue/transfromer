@@ -56,7 +56,6 @@ func processState(c rune) {
 		if c == DubQUOTE {
 			RestartScan()
 		}
-		//print until end quote
 	case Scan:
 		if !ValidWord(string(c)) {
 			endWord(lookUpBuffer(), c)

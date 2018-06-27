@@ -7,13 +7,14 @@ import (
 	"fmt"
 	"os"
 	"bytes"
+	"flag"
+	"errors"
 )
 
-//const FILEIN = "/Users/bluegaston/go/src/transfromDictionary/php-tests.php"
-//const FILEOUT = "/Users/bluegaston/transformer.php"
+var FILEIN = ""
+var FILEOUT = ""
 
-const FILEIN = "/php/tests/php-tests.php"
-const FILEOUT = "/php/tests/transformed.php"
+
 
 
 
@@ -21,7 +22,6 @@ var state = NonPhp
 var ValidWord = regexp.MustCompile("\\w").MatchString
 var NewLine = regexp.MustCompile("\\r\\n|\\r|\\n|;").MatchString
 
-var bracketDepth = 0
 var PhpFlag = []byte("<?php")
 var endComment = []byte("*/")
 
@@ -50,6 +50,9 @@ const (
 
 
 func initReader() io.RuneReader {
+
+	parseCmdLn()
+
 	original, err := ioutil.ReadFile(FILEIN)
 
 	if err != nil {
@@ -65,4 +68,18 @@ func writeOut(b []byte) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func parseCmdLn() { //TODO: This should take multiple files eventually.
+	flag.StringVar(&FILEIN, "f", "", "File to transform needed")
+
+	flag.Parse()
+	FILEOUT = "ps-" + FILEIN
+
+	if FILEIN == "" || FILEOUT == "" {
+		err := errors.New("required field '-f' missing. Please input filename" )
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
 }

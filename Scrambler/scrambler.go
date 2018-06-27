@@ -16,7 +16,7 @@ import (
 func main() {
 
 	scrambleFile(LEX)
-	fmt.Println("Mapping Built. Lex Scrambled.")
+	fmt.Println("Mapping Built. \n Lex Scrambled.")
 	b.Reset()
 	scrambleFile(YAK)
 	fmt.Println("Yak Scrambled.")
@@ -28,13 +28,13 @@ func main() {
 func scrambleFile(file int) {
 	switch file {
 	case LEX:
-		scanLines(LEXFILE, LEXFILEOUT, lexFlag, LEX)
+		scanLines(LEXFILE, lexFlag, LEX)
 	case YAK:
-		scanLines(YAKFILE, YAKFILEOUT, yakFlag, YAK)
+		scanLines(YAKFILE, yakFlag, YAK)
 	}
 }
 
-func scanLines(fileIn string, fileOut string, flag []byte, state int) {
+func scanLines(fileIn string, flag []byte, state int) {
 	file, err := os.Open(fileIn)
 	check(err)
 	defer file.Close()
@@ -50,7 +50,7 @@ func scanLines(fileIn string, fileOut string, flag []byte, state int) {
 			writeLineToBuff(line)
 		}
 	}
-	writeFile(fileOut)
+	writeFile(fileIn)
 }
 
 func getWords(s []byte, state int) {

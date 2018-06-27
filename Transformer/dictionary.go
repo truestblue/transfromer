@@ -4,6 +4,7 @@ import (
 	"os"
 	"encoding/gob"
 	"strings"
+	"fmt"
 )
 
 var lookup = make(map[string]string)
@@ -30,7 +31,10 @@ func lookUpBuffer() string {
 func initMapping() {
 	decodeFile, err := os.Open("scrambled.gob")
 	if err != nil {
-		panic(err)
+		fmt.Println("Error-- transformation not preformed.")
+		fmt.Println(err)
+		os.Exit(1)
+
 	}
 	defer decodeFile.Close()
 
