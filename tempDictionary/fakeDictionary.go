@@ -16,7 +16,7 @@ func main() {
 	}
 
 	// Create a file for IO
-	encodeFile, err := os.Create("tempDictionary.gob")
+	encodeFile, err := os.Create("scrambled.gob")
 	if err != nil {
 		panic(err)
 	}

@@ -9,11 +9,13 @@ import (
 	"bytes"
 )
 
-const FILEIN = "/Users/bluegaston/test.php"
-const FILEOUT = "/Users/bluegaston/transformer.php"
+//const FILEIN = "/Users/bluegaston/go/src/transfromDictionary/php-tests.php"
+//const FILEOUT = "/Users/bluegaston/transformer.php"
 
-//const FILEIN = "tests/php-tests.php"
-//const FILEOUT = "tests/transformed.php"
+const FILEIN = "/php/tests/php-tests.php"
+const FILEOUT = "/php/tests/transformed.php"
+
+
 
 var state = NonPhp
 var ValidWord = regexp.MustCompile("\\w").MatchString
@@ -26,24 +28,24 @@ var endComment = []byte("*/")
 const (
 	UserDef        = iota
 	Quoted         = iota
-	Brackets       = iota
 	Scan           = iota
 	Escaped        = iota
 	NonPhp         = iota
-	FwdSearch      = iota
+	FwdSlash       = iota
 	MultiComment   = iota
 	OneLineComment = iota
+	Question 	   = iota
 )
 
 const (
 	DubQUOTE  = rune('"')
 	VARIABLE  = rune('$')
 	BACKSLASH = rune('\\')
-	LBRACKET  = rune('<')
 	RBRACKET  = rune('>')
 	HASHTAG   = rune('#')
 	ASTRIX    = rune('*')
 	FwdSLASH  = rune('/')
+	QUESTION  = rune('?')
 )
 
 

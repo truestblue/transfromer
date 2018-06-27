@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"encoding/gob"
+	"strings"
 )
 
 var lookup = make(map[string]string)
@@ -17,8 +18,7 @@ func lookUpBuffer() string {
 
 	sOut := string([]rune(s)[:(len(s) - 1)])
 
-	if val, ok := lookup[sOut]; ok {
-		numReplaced++
+	if val, ok := lookup[strings.ToLower(sOut)]; ok {
 		return val
 	} else {
 		return sOut
@@ -28,7 +28,7 @@ func lookUpBuffer() string {
 
 //Grab dictionary -- FromFile
 func initMapping() {
-	decodeFile, err := os.Open("../tempDictionary/tempDictionary.gob")
+	decodeFile, err := os.Open("scrambled.gob")
 	if err != nil {
 		panic(err)
 	}
@@ -38,9 +38,4 @@ func initMapping() {
 	decoder.Decode(&lookup)
 }
 
-	//"echo": "ocho",
-	//"do": "od",
-	//"while": "elihw",
-	//"hi": "ih",
-	//"n": "u",
 

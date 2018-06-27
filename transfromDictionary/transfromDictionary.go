@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"log"
 	"io"
-	"fmt"
 )
 
 //TODO: TAKE FILE NAME AS INPUT
@@ -12,8 +11,6 @@ import (
 
 var bufTok = bytes.Buffer{}
 var bufOut = bytes.Buffer{}
-
-var numReplaced = 0
 
 func main() {
 	r := initReader()
@@ -31,7 +28,6 @@ func main() {
 		processState(c)
 
 	}
-	fmt.Printf("buf: %s ", bufOut.String())
 	bufOut.Write(bufTok.Bytes())
 	writeOut(bufOut.Bytes())
 }
@@ -42,6 +38,12 @@ func processState(c rune) {
 	switch state {
 	case NonPhp:
 		if bytes.Contains(bufTok.Bytes(), PhpFlag) {
+			RestartScan()
+		}
+	case Question:
+		if c == RBRACKET {
+			state = NonPhp
+		} else {
 			RestartScan()
 		}
 	case Escaped:
@@ -63,13 +65,11 @@ func processState(c rune) {
 		if bytes.Contains(bufTok.Bytes(), endComment) {
 			RestartScan()
 		}
-
 	case OneLineComment:
 		if NewLine(string(c)) {
 			RestartScan()
 		}
-
-	case FwdSearch:
+	case FwdSlash:
 		if c == ASTRIX {
 			state = MultiComment
 		} else if c == FwdSLASH {
@@ -77,17 +77,7 @@ func processState(c rune) {
 		} else {
 			RestartScan()
 		}
-	case Brackets:
-		if rune(c) == LBRACKET {
-			bracketDepth++
-		} else if rune(c) == RBRACKET {
-			bracketDepth--
-		}
-		if bracketDepth == 0 {
-			RestartScan()
-		}
 	}
-
 }
 
 func RestartScan() {
@@ -98,15 +88,12 @@ func RestartScan() {
 
 func transitionState(c rune) {
 	switch c {
-	case LBRACKET:
-		bracketDepth++
-		state = Brackets
-	case RBRACKET:
-		state = NonPhp
+	case QUESTION:
+		state = Question
 	case HASHTAG:
 		state = OneLineComment
 	case FwdSLASH:
-		state = FwdSearch
+		state = FwdSlash
 	case DubQUOTE:
 		state = Quoted
 	case VARIABLE:
