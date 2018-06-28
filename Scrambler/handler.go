@@ -62,7 +62,7 @@ func writeLineToBuff(s []byte) {
 }
 
 func serializeMap() {
-	encodeFile, err := os.Create("scrambled.gob")
+	encodeFile, err := os.Create("/php/scrambled.gob")
 	if err != nil {
 		panic(err)
 	}
