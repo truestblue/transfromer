@@ -23,7 +23,6 @@ const (
 func RandomStringGen() string {
 	n := rand.Intn(MAX - MIN) + MIN
 	b := make([]byte, n)
-	// A randSrc.Int63() generates 63 random bits, enough for letterIdxMax characters!
 	for i, cache, remain := n-1, randSrc.Int63(), letterIdxMax; i >= 0; {
 		if remain == 0 {
 			cache, remain = randSrc.Int63(), letterIdxMax

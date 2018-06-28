@@ -27,18 +27,14 @@ var keywordsRegex = regexp.MustCompile( //REGEX found as user @martindilling com
 
 
 var lexFlag = []byte("<ST_IN_SCRIPTING>\"")
-var yakFlag = []byte("%token")
+var yakFlag = []byte("%token T_")
 
 
 const YAKFILE = "/php/php-src/Zend/zend_language_parser.y"
 const LEXFILE = "/php/php-src/Zend/zend_language_scanner.l"
-//const YAKFILEOUT = YAKFILE
-//const LEXFILEOUT = LEXFILE
 
 //const YAKFILE = "zend_language_parser.y"
 //const LEXFILE = "zend_language_scanner.l"
-//const YAKFILEOUT = "zend_language_parser_out.y"
-//const LEXFILEOUT = "zend_language_scanner_out.l"
 
 const (
 	YAK = iota

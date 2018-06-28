@@ -15,9 +15,6 @@ var FILEIN = ""
 var FILEOUT = ""
 
 
-
-
-
 var state = NonPhp
 var ValidWord = regexp.MustCompile("\\w").MatchString
 var NewLine = regexp.MustCompile("\\r\\n|\\r|\\n|;").MatchString
@@ -71,10 +68,16 @@ func writeOut(b []byte) {
 }
 
 func parseCmdLn() { //TODO: This should take multiple files eventually.
-	flag.StringVar(&FILEIN, "f", "", "File to transform needed")
+	flag.StringVar(&FILEIN, "f", "", "File to transform.")
+	var replace = flag.Bool("replace", false, "Set to true to replace original file.")
 
 	flag.Parse()
-	FILEOUT = "ps-" + FILEIN
+	if *replace == true {
+	 	FILEOUT = FILEIN
+	} else {
+		FILEOUT = "ps-" + FILEIN
+	}
+
 
 	if FILEIN == "" || FILEOUT == "" {
 		err := errors.New("required field '-f' missing. Please input filename" )

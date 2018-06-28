@@ -2,10 +2,6 @@ package main
 
 //TODO: CLEAN UP, REFACTOR
 
-//TODO: Automate test
-
-//TODO: Put in polyscript folder/docker
-
 import (
 	"os"
 	"bufio"
@@ -14,15 +10,13 @@ import (
 )
 
 func main() {
-
 	scrambleFile(LEX)
-	fmt.Println("Mapping Built. \n Lex Scrambled.")
+	fmt.Println("Mapping Built. \nLex Scrambled.")
 	b.Reset()
 	scrambleFile(YAK)
 	fmt.Println("Yak Scrambled.")
 	serializeMap()
-	fmt.Println("Map Serialized")
-
+	fmt.Println("Map Serialized.")
 }
 
 func scrambleFile(file int) {
@@ -64,10 +58,17 @@ func getWords(s []byte, state int) {
 		return
 	}
 
-	if _, ok := polyWords[string(keyWord)]; !ok && state != YAK {
-		polyWords[string(keyWord)] = RandomStringGen() // Add to map, generate random string (need checks here?)
+	key := string(keyWord)
+
+	if _, ok := polyWords[key]; !ok {
+		if state != YAK {
+			polyWords[key] = RandomStringGen() // Add to map, generate random string (need checks here?)
+			key = polyWords[key]
+		}
+	} else {
+		key = polyWords[key]
 	}
 
-	out := keywordsRegex.ReplaceAll([]byte(s), []byte(polyWords[string(keyWord)])) //Replace word with random string
+	out := keywordsRegex.ReplaceAll([]byte(s), []byte(key)) //Replace word with random string
 	writeLineToBuff(out)
 }
